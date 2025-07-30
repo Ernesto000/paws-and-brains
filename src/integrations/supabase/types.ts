@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          license_number: string | null
+          practice_name: string | null
+          specialization:
+            | Database["public"]["Enums"]["veterinary_specialization"]
+            | null
+          updated_at: string
+          user_id: string
+          verification_document_url: string | null
+          verification_status: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          license_number?: string | null
+          practice_name?: string | null
+          specialization?:
+            | Database["public"]["Enums"]["veterinary_specialization"]
+            | null
+          updated_at?: string
+          user_id: string
+          verification_document_url?: string | null
+          verification_status?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          license_number?: string | null
+          practice_name?: string | null
+          specialization?:
+            | Database["public"]["Enums"]["veterinary_specialization"]
+            | null
+          updated_at?: string
+          user_id?: string
+          verification_document_url?: string | null
+          verification_status?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +67,26 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      veterinary_specialization:
+        | "small_animal"
+        | "large_animal"
+        | "equine"
+        | "exotic"
+        | "emergency_critical_care"
+        | "surgery"
+        | "internal_medicine"
+        | "dermatology"
+        | "ophthalmology"
+        | "cardiology"
+        | "oncology"
+        | "pathology"
+        | "radiology"
+        | "anesthesiology"
+        | "behavior"
+        | "nutrition"
+        | "public_health"
+        | "research"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +213,28 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      veterinary_specialization: [
+        "small_animal",
+        "large_animal",
+        "equine",
+        "exotic",
+        "emergency_critical_care",
+        "surgery",
+        "internal_medicine",
+        "dermatology",
+        "ophthalmology",
+        "cardiology",
+        "oncology",
+        "pathology",
+        "radiology",
+        "anesthesiology",
+        "behavior",
+        "nutrition",
+        "public_health",
+        "research",
+        "other",
+      ],
+    },
   },
 } as const
