@@ -2,41 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* VetIntel Design System - Professional Veterinary Research Platform */
 
 @layer base {
   :root {
+    /* Core Brand Colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 215 25% 27%;
 
+    /* Card System */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 25% 27%;
 
+    /* Interactive Elements */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 25% 27%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary Brand - Professional Veterinary Blue */
+    --primary: 210 92% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 210 92% 40%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Medical Green */
+    --secondary: 142 69% 58%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
+    /* Accent - Trust Blue */
+    --accent: 200 95% 95%;
+    --accent-foreground: 210 92% 45%;
+
+    /* Muted Elements */
+    --muted: 210 40% 98%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Quality Indicators */
+    --evidence-high: 142 69% 58%;
+    --evidence-medium: 45 93% 58%;
+    --evidence-low: 0 84% 60%;
+    --evidence-insufficient: 215 14% 69%;
 
+    /* System Colors */
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
     --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --input: 220 13% 91%;
+    --ring: 210 92% 45%;
 
-    --radius: 0.5rem;
+    /* Design System Values */
+    --radius: 0.75rem;
+    
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%);
+
+    /* Shadows */
+    --shadow-soft: 0 1px 3px 0 hsl(var(--primary) / 0.1), 0 1px 2px 0 hsl(var(--primary) / 0.06);
+    --shadow-medium: 0 4px 6px -1px hsl(var(--primary) / 0.1), 0 2px 4px -1px hsl(var(--primary) / 0.06);
+    --shadow-large: 0 10px 15px -3px hsl(var(--primary) / 0.1), 0 4px 6px -2px hsl(var(--primary) / 0.05);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
