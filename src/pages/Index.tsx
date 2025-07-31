@@ -10,13 +10,21 @@ const Index = () => {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setShowResults(true);
+    
+    // Scroll to results after a brief delay to allow rendering
+    setTimeout(() => {
+      const resultsElement = document.getElementById('search-results');
+      if (resultsElement) {
+        resultsElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <SearchSection onSearch={handleSearch} />
-      {showResults && <AISearchResults query={searchQuery} />}
+      {showResults && <div id="search-results"><AISearchResults query={searchQuery} /></div>}
     </div>
   );
 };
