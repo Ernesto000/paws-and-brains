@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Brain, Clock } from "lucide-react";
+import { Loader2, Brain, Clock, ChevronDown, ChevronUp, BookOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 interface AISearchResultsProps {
@@ -11,6 +12,7 @@ const AISearchResults = ({ query }: AISearchResultsProps) => {
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState("");
   const [error, setError] = useState("");
+  const [showReferences, setShowReferences] = useState(false);
 
   useEffect(() => {
     const searchWithAI = async () => {
@@ -40,6 +42,30 @@ const AISearchResults = ({ query }: AISearchResultsProps) => {
 
     searchWithAI();
   }, [query]);
+
+  // Parse response to separate main content and references
+  const parseResponse = (text: string) => {
+    const referencesIndex = text.toLowerCase().indexOf('references:');
+    if (referencesIndex === -1) {
+      return { mainContent: text, references: [] };
+    }
+    
+    const mainContent = text.substring(0, referencesIndex).trim();
+    const referencesText = text.substring(referencesIndex + 11).trim();
+    const references = referencesText
+      .split('\n')
+      .filter(line => line.trim() && /^\d+\./.test(line.trim()))
+      .map(ref => ref.trim());
+    
+    return { mainContent, references };
+  };
+
+  // Format text with superscript citations
+  const formatTextWithCitations = (text: string) => {
+    return text.replace(/\[(\d+)\]/g, '<sup class="text-primary font-medium">$1</sup>');
+  };
+
+  const { mainContent, references } = parseResponse(response);
 
   return (
     <section className="py-12 bg-background">
@@ -79,10 +105,46 @@ const AISearchResults = ({ query }: AISearchResultsProps) => {
                   )}
 
                   {response && !loading && (
-                    <div className="prose prose-sm max-w-none">
-                      <div className="whitespace-pre-wrap text-foreground leading-relaxed">
-                        {response}
-                      </div>
+                    <div className="space-y-4">
+                      {/* Main Content */}
+                      <div 
+                        className="prose prose-sm max-w-none text-foreground leading-relaxed"
+                        dangerouslySetInnerHTML={{ 
+                          __html: formatTextWithCitations(mainContent).replace(/\n/g, '<br />') 
+                        }}
+                      />
+                      
+                      {/* References Section */}
+                      {references.length > 0 && (
+                        <div className="mt-6 border-t border-border pt-4">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowReferences(!showReferences)}
+                            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                          >
+                            <BookOpen className="w-4 h-4" />
+                            References ({references.length})
+                            {showReferences ? 
+                              <ChevronUp className="w-4 h-4" /> : 
+                              <ChevronDown className="w-4 h-4" />
+                            }
+                          </Button>
+                          
+                          {showReferences && (
+                            <div className="mt-3 space-y-2">
+                              {references.map((ref, index) => (
+                                <div 
+                                  key={index}
+                                  className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-md border-l-2 border-primary/30"
+                                >
+                                  {ref}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
