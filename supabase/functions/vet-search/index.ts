@@ -56,9 +56,15 @@ RESPONSE STRUCTURE:
 
 CITATION EXAMPLES:
 - In text: "NSAIDs are contraindicated in cats due to reduced glucuronidation capacity [1]. Meloxicam may be used short-term with careful monitoring [2]."
-- References format:
-1. Lascelles BDX, Court MH, Hardie EM, et al. Nonsteroidal anti-inflammatory drugs in cats: a review. Vet Anaesth Analg. 2007;34(4):228-250.
-2. Giraudel JM, Toutain PL, Lees P. Development of in vitro assays for the evaluation of cyclooxygenase inhibitors and predicting selectivity of nonsteroidal anti-inflammatory drugs in cats. Am J Vet Res. 2005;66(4):700-709.
+- References format (MUST include DOI or URL):
+1. Lascelles BDX, Court MH, Hardie EM, et al. Nonsteroidal anti-inflammatory drugs in cats: a review. Vet Anaesth Analg. 2007;34(4):228-250. doi: 10.1111/j.1467-2995.2007.00352.x
+2. Ettinger SJ, Feldman EC. Textbook of veterinary internal medicine. 8th ed. St. Louis: Elsevier; 2017. Available from: https://www.elsevier.com/books/textbook-of-veterinary-internal-medicine/ettinger/9780323312110
+
+REFERENCE REQUIREMENTS:
+- ALL references MUST include either a DOI (preferred) or URL
+- Use "doi: " prefix for DOI links
+- Use "Available from: " prefix for URLs
+- Follow modern Vancouver style with online accessibility
 
 Keep responses focused, evidence-based, and professionally formatted with proper citations.`
           }]
