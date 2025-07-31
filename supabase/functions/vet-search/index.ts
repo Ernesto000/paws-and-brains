@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const geminiApiKey = Deno.env.get('GOOGLE_GEMINI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,8 +15,8 @@ serve(async (req) => {
   }
 
   try {
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    if (!geminiApiKey) {
+      throw new Error('Google Gemini API key not configured');
     }
 
     const { query } = await req.json();
@@ -27,18 +27,20 @@ serve(async (req) => {
 
     console.log('Processing veterinary query:', query);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: `You are VetIntel, an expert veterinary AI assistant. You provide evidence-based, accurate information for veterinary professionals. 
+        contents: [{
+          parts: [{
+            text: query
+          }]
+        }],
+        systemInstruction: {
+          parts: [{
+            text: `You are VetIntel, an expert veterinary AI assistant. You provide evidence-based, accurate information for veterinary professionals. 
 
 Guidelines:
 - Provide clear, professional responses based on current veterinary knowledge
@@ -50,25 +52,23 @@ Guidelines:
 - Focus on practical, actionable information for veterinary practice
 
 Remember: You are assisting qualified veterinary professionals, so provide detailed technical information while maintaining clinical accuracy.`
-          },
-          {
-            role: 'user',
-            content: query
-          }
-        ],
-        temperature: 0.3,
-        max_tokens: 1500,
+          }]
+        },
+        generationConfig: {
+          temperature: 0.3,
+          maxOutputTokens: 1500,
+        }
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('OpenAI API error:', response.status, errorData);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error('Gemini API error:', response.status, errorData);
+      throw new Error(`Gemini API error: ${response.status}`);
     }
 
     const data = await response.json();
-    const aiResponse = data.choices[0].message.content;
+    const aiResponse = data.candidates[0].content.parts[0].text;
 
     console.log('Generated response for query');
 
