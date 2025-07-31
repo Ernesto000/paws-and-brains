@@ -27,21 +27,6 @@ const Header = () => {
             </div>
           </Link>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              Search
-            </a>
-            <a href="#" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              Research
-            </a>
-            <a href="#" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              Guidelines
-            </a>
-            <a href="#" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              About
-            </a>
-          </nav>
 
           {/* Actions */}
           <div className="flex items-center gap-3">

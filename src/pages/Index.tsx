@@ -1,15 +1,22 @@
+import { useState } from "react";
 import Header from "@/components/Header";
 import SearchSection from "@/components/SearchSection";
-import SearchResults from "@/components/SearchResults";
-import Footer from "@/components/Footer";
+import AISearchResults from "@/components/AISearchResults";
 
 const Index = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showResults, setShowResults] = useState(false);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setShowResults(true);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <SearchSection />
-      <SearchResults />
-      <Footer />
+      <SearchSection onSearch={handleSearch} />
+      {showResults && <AISearchResults query={searchQuery} />}
     </div>
   );
 };
