@@ -76,20 +76,6 @@ const Index = () => {
     );
   }
 
-  // Show restricted access message for unverified users
-  if (!canAccessVetFeatures) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <RoleGuard 
-          allowedRoles={['veterinarian', 'admin']}
-          fallbackMessage="AI search is available only to verified veterinary professionals. Please complete your profile verification to access this feature."
-        >
-          <div></div>
-        </RoleGuard>
-      </div>
-    );
-  }
 
   // Full access for verified users
   return (

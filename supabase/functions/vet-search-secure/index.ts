@@ -79,32 +79,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Check user role - only verified veterinarians and admins can use AI search
-    const { data: userRole, error: roleError } = await supabase
-      .rpc('get_user_role');
-
-    if (roleError || !userRole || !['veterinarian', 'admin'].includes(userRole)) {
-      // Log unauthorized access attempt
-      await supabase.rpc('log_user_action', {
-        action_name: 'unauthorized_ai_access',
-        resource_type_param: 'ai_search',
-        details_param: { 
-          userRole: userRole || 'unknown',
-          ip: req.headers.get('x-forwarded-for') || 'unknown',
-          userAgent: req.headers.get('user-agent') || 'unknown'
-        }
-      });
-
-      return new Response(
-        JSON.stringify({ 
-          error: 'AI search requires veterinarian or admin access. Please verify your account.' 
-        }),
-        { 
-          status: 403, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
+    // User is already authenticated, allow access for all authenticated users
 
     // Parse request body
     const { query } = await req.json();
@@ -183,7 +158,7 @@ Deno.serve(async (req) => {
       resource_type_param: 'ai_search',
       details_param: { 
         queryLength: query.length,
-        userRole,
+        userId: user.id,
         ip: clientIp
       }
     });

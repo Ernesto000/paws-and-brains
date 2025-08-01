@@ -68,10 +68,8 @@ export const useHasRole = (requiredRole: UserRole): boolean => {
 
 // Helper hook to check if user can access veterinary features
 export const useCanAccessVetFeatures = (): boolean => {
-  const { role, loading } = useRoleCheck();
+  const { user } = useAuth();
   
-  if (loading || !role) return false;
-  
-  // Only verified veterinarians and admins can access vet features
-  return role === 'veterinarian' || role === 'admin';
+  // Allow access for any authenticated user
+  return !!user;
 };
