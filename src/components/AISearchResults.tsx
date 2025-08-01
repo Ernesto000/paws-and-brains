@@ -24,8 +24,18 @@ const AISearchResults = ({ query }: AISearchResultsProps) => {
       setResponse("");
 
       try {
+        // Get the current session to ensure we have a valid auth token
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          throw new Error('Authentication required. Please sign in again.');
+        }
+
         const { data, error: functionError } = await supabase.functions.invoke('vet-search-secure', {
-          body: { query }
+          body: { query },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          }
         });
 
         if (functionError) {
