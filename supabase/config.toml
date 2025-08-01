@@ -61,3 +61,6 @@ inspector_port = 54329
 
 [functions.vet-search]
 verify_jwt = true
+
+[functions.vet-search-secure]
+verify_jwt = true

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useRoleCheck } from '@/hooks/useRoleCheck';
+import { useSecurityLogging } from '@/hooks/useSecurityLogging';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,6 +49,8 @@ const specializations = [
 
 export default function Profile() {
   const { user, signOut } = useAuth();
+  const { role, loading: roleLoading } = useRoleCheck();
+  const { logProfileUpdate, logFileUpload } = useSecurityLogging();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
@@ -106,6 +110,9 @@ export default function Profile() {
         variant: "destructive",
       });
     } else {
+      // Log profile update for security monitoring
+      logProfileUpdate();
+      
       toast({
         title: "Success",
         description: "Profile updated successfully",
@@ -183,6 +190,9 @@ export default function Profile() {
         variant: "destructive",
       });
     } else {
+      // Log file upload for security monitoring
+      logFileUpload(file.name, file.size);
+      
       toast({
         title: "Success",
         description: "Verification document uploaded successfully",

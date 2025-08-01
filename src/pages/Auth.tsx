@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useSecurityLogging } from '@/hooks/useSecurityLogging';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +17,7 @@ export default function Auth() {
   const { signUp, signIn, signInWithOAuth } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { logAuthAttempt } = useSecurityLogging();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,12 +32,14 @@ export default function Auth() {
       }
 
       if (result.error) {
+        logAuthAttempt(false, 'email');
         toast({
           title: "Authentication Error",
           description: result.error.message,
           variant: "destructive",
         });
       } else {
+        logAuthAttempt(true, 'email');
         if (isSignUp) {
           toast({
             title: "Registration Successful",
@@ -61,11 +65,14 @@ export default function Auth() {
     try {
       const result = await signInWithOAuth(provider);
       if (result.error) {
+        logAuthAttempt(false, provider);
         toast({
           title: "Authentication Error",
           description: result.error.message,
           variant: "destructive",
         });
+      } else {
+        logAuthAttempt(true, provider);
       }
     } catch (error) {
       toast({

@@ -24,7 +24,7 @@ const AISearchResults = ({ query }: AISearchResultsProps) => {
       setResponse("");
 
       try {
-        const { data, error: functionError } = await supabase.functions.invoke('vet-search', {
+        const { data, error: functionError } = await supabase.functions.invoke('vet-search-secure', {
           body: { query }
         });
 
