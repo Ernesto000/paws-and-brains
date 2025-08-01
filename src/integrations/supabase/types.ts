@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      documents: {
+        Row: {
+          content: string | null
+          document_title: string | null
+          embedding: string | null
+          id: string
+          source_url: string | null
+        }
+        Insert: {
+          content?: string | null
+          document_title?: string | null
+          embedding?: string | null
+          id?: string
+          source_url?: string | null
+        }
+        Update: {
+          content?: string | null
+          document_title?: string | null
+          embedding?: string | null
+          id?: string
+          source_url?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

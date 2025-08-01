@@ -119,12 +119,48 @@ export default function Profile() {
     const file = event.target.files?.[0];
     if (!file || !user) return;
 
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}/license.${fileExt}`;
+    // Enhanced file validation
+    const maxSize = 20 * 1024 * 1024; // 20MB
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    const allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'gif'];
+
+    // Validate file size
+    if (file.size > maxSize) {
+      toast({
+        title: "File Too Large",
+        description: "File size must be less than 20MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate MIME type
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Invalid File Type",
+        description: "Only PDF, JPG, JPEG, PNG, and GIF files are allowed",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file extension
+    const fileExt = file.name.split('.').pop()?.toLowerCase();
+    if (!fileExt || !allowedExtensions.includes(fileExt)) {
+      toast({
+        title: "Invalid File Extension",
+        description: "Only PDF, JPG, JPEG, PNG, and GIF files are allowed",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Sanitize filename
+    const sanitizedFileName = `${user.id}/license_${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from('verification-docs')
-      .upload(fileName, file, { upsert: true });
+      .upload(sanitizedFileName, file, { upsert: true });
 
     if (uploadError) {
       toast({
@@ -137,7 +173,7 @@ export default function Profile() {
 
     const { error: updateError } = await supabase
       .from('profiles')
-      .update({ verification_document_url: fileName })
+      .update({ verification_document_url: sanitizedFileName })
       .eq('user_id', user.id);
 
     if (updateError) {

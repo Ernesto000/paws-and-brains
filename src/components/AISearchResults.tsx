@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Loader2, Brain, Clock, ChevronDown, ChevronUp, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import DOMPurify from 'dompurify';
 
 interface AISearchResultsProps {
   query: string;
@@ -60,9 +61,15 @@ const AISearchResults = ({ query }: AISearchResultsProps) => {
     return { mainContent, references };
   };
 
-  // Format text with superscript citations
+  // Format text with superscript citations and sanitize HTML
   const formatTextWithCitations = (text: string) => {
-    return text.replace(/\[(\d+)\]/g, '<sup class="text-primary font-medium">$1</sup>');
+    const formatted = text.replace(/\[(\d+)\]/g, '<sup class="text-primary font-medium">$1</sup>');
+    const withBreaks = formatted.replace(/\n/g, '<br />');
+    // Sanitize HTML to prevent XSS attacks
+    return DOMPurify.sanitize(withBreaks, {
+      ALLOWED_TAGS: ['sup', 'br', 'strong', 'em', 'u'],
+      ALLOWED_ATTR: ['class']
+    });
   };
 
   const { mainContent, references } = parseResponse(response);
@@ -107,10 +114,10 @@ const AISearchResults = ({ query }: AISearchResultsProps) => {
                   {response && !loading && (
                     <div className="space-y-4">
                       {/* Main Content */}
-                      <div 
+                       <div 
                         className="prose prose-sm max-w-none text-foreground leading-relaxed"
                         dangerouslySetInnerHTML={{ 
-                          __html: formatTextWithCitations(mainContent).replace(/\n/g, '<br />') 
+                          __html: formatTextWithCitations(mainContent)
                         }}
                       />
                       
