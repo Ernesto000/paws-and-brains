@@ -14,16 +14,219 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          resource_id: string | null
+          resource_type: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          resource_id?: string | null
+          resource_type?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          resource_id?: string | null
+          resource_type?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      documents: {
+        Row: {
+          content: string | null
+          document_title: string | null
+          embedding: string | null
+          id: string
+          source_url: string | null
+        }
+        Insert: {
+          content?: string | null
+          document_title?: string | null
+          embedding?: string | null
+          id?: string
+          source_url?: string | null
+        }
+        Update: {
+          content?: string | null
+          document_title?: string | null
+          embedding?: string | null
+          id?: string
+          source_url?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          license_number: string | null
+          practice_name: string | null
+          specialization:
+            | Database["public"]["Enums"]["veterinary_specialization"]
+            | null
+          updated_at: string
+          user_id: string
+          verification_document_url: string | null
+          verification_status: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          license_number?: string | null
+          practice_name?: string | null
+          specialization?:
+            | Database["public"]["Enums"]["veterinary_specialization"]
+            | null
+          updated_at?: string
+          user_id: string
+          verification_document_url?: string | null
+          verification_status?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          license_number?: string | null
+          practice_name?: string | null
+          specialization?:
+            | Database["public"]["Enums"]["veterinary_specialization"]
+            | null
+          updated_at?: string
+          user_id?: string
+          verification_document_url?: string | null
+          verification_status?: string | null
+        }
+        Relationships: []
+      }
+      rate_limits: {
+        Row: {
+          blocked_until: string | null
+          created_at: string
+          endpoint: string
+          id: string
+          ip_address: unknown | null
+          request_count: number
+          updated_at: string
+          user_id: string | null
+          window_start: string
+        }
+        Insert: {
+          blocked_until?: string | null
+          created_at?: string
+          endpoint: string
+          id?: string
+          ip_address?: unknown | null
+          request_count?: number
+          updated_at?: string
+          user_id?: string | null
+          window_start?: string
+        }
+        Update: {
+          blocked_until?: string | null
+          created_at?: string
+          endpoint?: string
+          id?: string
+          ip_address?: unknown | null
+          request_count?: number
+          updated_at?: string
+          user_id?: string | null
+          window_start?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          assigned_at: string
+          assigned_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { user_uuid?: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          required_role: Database["public"]["Enums"]["app_role"]
+          user_uuid?: string
+        }
+        Returns: boolean
+      }
+      log_user_action: {
+        Args: {
+          action_name: string
+          resource_type_param?: string
+          resource_id_param?: string
+          details_param?: Json
+        }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "veterinarian" | "student" | "unverified"
+      veterinary_specialization:
+        | "small_animal"
+        | "large_animal"
+        | "equine"
+        | "exotic"
+        | "emergency_critical_care"
+        | "surgery"
+        | "internal_medicine"
+        | "dermatology"
+        | "ophthalmology"
+        | "cardiology"
+        | "oncology"
+        | "pathology"
+        | "radiology"
+        | "anesthesiology"
+        | "behavior"
+        | "nutrition"
+        | "public_health"
+        | "research"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +353,29 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "veterinarian", "student", "unverified"],
+      veterinary_specialization: [
+        "small_animal",
+        "large_animal",
+        "equine",
+        "exotic",
+        "emergency_critical_care",
+        "surgery",
+        "internal_medicine",
+        "dermatology",
+        "ophthalmology",
+        "cardiology",
+        "oncology",
+        "pathology",
+        "radiology",
+        "anesthesiology",
+        "behavior",
+        "nutrition",
+        "public_health",
+        "research",
+        "other",
+      ],
+    },
   },
 } as const
