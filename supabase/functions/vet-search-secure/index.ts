@@ -48,14 +48,13 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Get and validate authorization
-    const authHeader = req.headers.get('authorization');
-    console.log('Auth header present:', !!authHeader);
+    // Get user info - Supabase automatically validates JWT when verify_jwt = true
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
     
-    if (!authHeader) {
-      console.error('No authorization header found');
+    if (userError || !user) {
+      console.error('Authentication failed:', userError?.message || 'No user found');
       return new Response(
-        JSON.stringify({ error: 'Authorization header missing' }),
+        JSON.stringify({ error: 'Authentication failed' }),
         { 
           status: 401, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -63,50 +62,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Extract token and set auth context
-    const token = authHeader.replace('Bearer ', '');
-    console.log('Token extracted, length:', token.length);
-    
-    try {
-      // Set session with the token
-      const { error: sessionError } = await supabase.auth.setSession({
-        access_token: token,
-        refresh_token: ''
-      });
-
-      if (sessionError) {
-        console.error('Session error:', sessionError);
-        throw sessionError;
-      }
-
-      // Get user info with the set session
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError) {
-        console.error('User fetch error:', userError);
-        throw userError;
-      }
-      
-      if (!user) {
-        console.error('No user found after authentication');
-        throw new Error('User not found');
-      }
-      
-      console.log('User authenticated successfully:', user.id);
-      
-    } catch (authError) {
-      console.error('Authentication failed:', authError);
-      return new Response(
-        JSON.stringify({ 
-          error: 'Authentication failed', 
-          details: authError.message 
-        }),
-        { 
-          status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
+    console.log('User authenticated successfully:', user.id);
 
     // User is already authenticated, allow access for all authenticated users
 
