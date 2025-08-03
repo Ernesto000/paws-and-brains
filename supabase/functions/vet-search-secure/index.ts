@@ -50,9 +50,12 @@ Deno.serve(async (req) => {
 
     // Get and validate authorization
     const authHeader = req.headers.get('authorization');
+    console.log('Auth header present:', !!authHeader);
+    
     if (!authHeader) {
+      console.error('No authorization header found');
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
+        JSON.stringify({ error: 'Authorization header missing' }),
         { 
           status: 401, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -60,18 +63,44 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Set auth context
-    await supabase.auth.setSession({
-      access_token: authHeader.replace('Bearer ', ''),
-      refresh_token: ''
-    });
+    // Extract token and set auth context
+    const token = authHeader.replace('Bearer ', '');
+    console.log('Token extracted, length:', token.length);
+    
+    try {
+      // Set session with the token
+      const { error: sessionError } = await supabase.auth.setSession({
+        access_token: token,
+        refresh_token: ''
+      });
 
-    // Get user info
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) {
-      console.error('User authentication failed:', userError);
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        throw sessionError;
+      }
+
+      // Get user info with the set session
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError) {
+        console.error('User fetch error:', userError);
+        throw userError;
+      }
+      
+      if (!user) {
+        console.error('No user found after authentication');
+        throw new Error('User not found');
+      }
+      
+      console.log('User authenticated successfully:', user.id);
+      
+    } catch (authError) {
+      console.error('Authentication failed:', authError);
       return new Response(
-        JSON.stringify({ error: 'Authentication failed' }),
+        JSON.stringify({ 
+          error: 'Authentication failed', 
+          details: authError.message 
+        }),
         { 
           status: 401, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
